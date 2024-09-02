@@ -19,20 +19,20 @@ using largest_type = conditional_t<(sizeof(A) > sizeof(B)), A, B>;
 
 enum class NumberType : uint8_t {
   Invalid,
-  Float,
+  Double,
   SignedInteger,
   UnsignedInteger
 };
 
 union NumberValue {
   NumberValue() {}
-  NumberValue(JsonFloat x) : asFloat(x) {}
+  NumberValue(double x) : asDouble(x) {}
   NumberValue(JsonInteger x) : asSignedInteger(x) {}
   NumberValue(JsonUInt x) : asUnsignedInteger(x) {}
 
   JsonInteger asSignedInteger;
   JsonUInt asUnsignedInteger;
-  JsonFloat asFloat;
+  double asDouble;
 };
 
 class Number {
@@ -41,15 +41,15 @@ class Number {
 
  public:
   Number() : type_(NumberType::Invalid) {}
-  Number(JsonFloat value) : type_(NumberType::Float), value_(value) {}
+  Number(double value) : type_(NumberType::Double), value_(value) {}
   Number(JsonInteger value) : type_(NumberType::SignedInteger), value_(value) {}
   Number(JsonUInt value) : type_(NumberType::UnsignedInteger), value_(value) {}
 
   template <typename T>
   T convertTo() const {
     switch (type_) {
-      case NumberType::Float:
-        return convertNumber<T>(value_.asFloat);
+      case NumberType::Double:
+        return convertNumber<T>(value_.asDouble);
       case NumberType::SignedInteger:
         return convertNumber<T>(value_.asSignedInteger);
       case NumberType::UnsignedInteger:
@@ -73,9 +73,9 @@ class Number {
     return value_.asUnsignedInteger;
   }
 
-  JsonFloat asFloat() const {
-    ARDUINOJSON_ASSERT(type_ == NumberType::Float);
-    return value_.asFloat;
+  double asDouble() const {
+    ARDUINOJSON_ASSERT(type_ == NumberType::Double);
+    return value_.asDouble;
   }
 };
 

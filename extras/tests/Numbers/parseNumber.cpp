@@ -23,7 +23,7 @@ TEST_CASE("Test unsigned integer overflow") {
   }
 
   REQUIRE(first.type() == NumberType::UnsignedInteger);
-  REQUIRE(second.type() == NumberType::Float);
+  REQUIRE(second.type() == NumberType::Double);
 }
 
 TEST_CASE("Test signed integer overflow") {
@@ -41,7 +41,7 @@ TEST_CASE("Test signed integer overflow") {
   }
 
   REQUIRE(first.type() == NumberType::SignedInteger);
-  REQUIRE(second.type() == NumberType::Float);
+  REQUIRE(second.type() == NumberType::Double);
 }
 
 TEST_CASE("Invalid value") {
