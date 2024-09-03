@@ -49,3 +49,15 @@ TEST_CASE("Invalid value") {
 
   REQUIRE(result.type() == NumberType::Invalid);
 }
+
+TEST_CASE("float") {
+  auto result = parseNumber("3.402823e38");
+
+  REQUIRE(result.type() == NumberType::Float);
+}
+
+TEST_CASE("double") {
+  auto result = parseNumber("1.7976931348623157e308");
+
+  REQUIRE(result.type() == NumberType::Double);
+}

@@ -531,11 +531,19 @@ class JsonDeserializer {
         else
           return DeserializationError::NoMemory;
 
+      case NumberType::Float:
+        if (result.setFloat(number.asFloat(), resources_))
+          return DeserializationError::Ok;
+        else
+          return DeserializationError::NoMemory;
+
+#if ARDUINOJSON_USE_DOUBLE
       case NumberType::Double:
         if (result.setFloat(number.asDouble(), resources_))
           return DeserializationError::Ok;
         else
           return DeserializationError::NoMemory;
+#endif
 
       default:
         return DeserializationError::InvalidInput;
