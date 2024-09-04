@@ -163,7 +163,7 @@ TEST_CASE("deserialize JSON object") {
       REQUIRE(err == DeserializationError::Ok);
       REQUIRE(doc.is<JsonObject>());
       REQUIRE(obj.size() == 2);
-      REQUIRE(obj["key1"] == 12.345f);
+      REQUIRE(obj["key1"].as<float>() == Approx(12.345f));
       REQUIRE(obj["key2"] == -7E3f);
     }
 
