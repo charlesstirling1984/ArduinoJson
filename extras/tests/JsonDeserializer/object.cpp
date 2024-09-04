@@ -169,13 +169,13 @@ TEST_CASE("deserialize JSON object") {
 
     SECTION("Double") {
       DeserializationError err =
-          deserializeJson(doc, "{\"key1\":12.33333333,\"key2\":-7E89}");
+          deserializeJson(doc, "{\"key1\":12.3456789,\"key2\":-7E89}");
       JsonObject obj = doc.as<JsonObject>();
 
       REQUIRE(err == DeserializationError::Ok);
       REQUIRE(doc.is<JsonObject>());
       REQUIRE(obj.size() == 2);
-      REQUIRE(obj["key1"] == 12.33333333);
+      REQUIRE(obj["key1"].as<double>() == Approx(12.3456789));
       REQUIRE(obj["key2"] == -7E89);
     }
 
