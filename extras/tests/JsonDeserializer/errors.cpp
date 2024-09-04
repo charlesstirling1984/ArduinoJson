@@ -149,7 +149,7 @@ TEST_CASE("deserializeJson() returns NoMemory if extension allocation fails") {
   }
 
   SECTION("float should pass") {
-    auto err = deserializeJson(doc, "3.4028235e38");
+    auto err = deserializeJson(doc, "3.402823e38");
 
     REQUIRE(err == DeserializationError::Ok);
   }

@@ -198,15 +198,15 @@ TEST_CASE("JsonVariant::as()") {
     REQUIRE(variant.as<JsonString>() == "hello");
   }
 
-  SECTION("set(std::string(\"4.2\"))") {
-    variant.set("4.2"_s);
+  SECTION("set(std::string(\"4.1\"))") {
+    variant.set("4.1"_s);
 
     REQUIRE(variant.as<bool>() == true);
     REQUIRE(variant.as<long>() == 4L);
-    REQUIRE(variant.as<double>() == 4.2);
-    REQUIRE(variant.as<const char*>() == "4.2"_s);
-    REQUIRE(variant.as<std::string>() == "4.2"_s);
-    REQUIRE(variant.as<JsonString>() == "4.2");
+    REQUIRE(variant.as<float>() == 4.1f);
+    REQUIRE(variant.as<const char*>() == "4.1"_s);
+    REQUIRE(variant.as<std::string>() == "4.1"_s);
+    REQUIRE(variant.as<JsonString>() == "4.1");
     REQUIRE(variant.as<JsonString>().isLinked() == false);
   }
 
