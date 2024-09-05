@@ -174,7 +174,13 @@ class VariantData {
   template <typename T>
   T asFloat(const ResourceManager* resources) const {
     static_assert(is_floating_point<T>::value, "T must be a floating point");
+#if ARDUINOJSON_USE_EXTENSIONS
+    auto extension = type_ & VariantTypeBits::ExtensionBit
+                         ? getExtension(resources)
+                         : nullptr;
+#else
     (void)resources;  // silence warning
+#endif
     switch (type_) {
       case VariantType::Boolean:
         return static_cast<T>(content_.asBoolean);
@@ -184,9 +190,9 @@ class VariantData {
         return static_cast<T>(content_.asInt32);
 #if ARDUINOJSON_USE_LONG_LONG
       case VariantType::Uint64:
-        return static_cast<T>(getExtension(resources)->asUint64);
+        return static_cast<T>(extension->asUint64);
       case VariantType::Int64:
-        return static_cast<T>(getExtension(resources)->asInt64);
+        return static_cast<T>(extension->asInt64);
 #endif
       case VariantType::LinkedString:
       case VariantType::OwnedString:
@@ -195,7 +201,7 @@ class VariantData {
         return static_cast<T>(content_.asFloat);
 #if ARDUINOJSON_USE_DOUBLE
       case VariantType::Double:
-        return static_cast<T>(getExtension(resources)->asDouble);
+        return static_cast<T>(extension->asDouble);
 #endif
       default:
         return 0;
@@ -205,7 +211,13 @@ class VariantData {
   template <typename T>
   T asIntegral(const ResourceManager* resources) const {
     static_assert(is_integral<T>::value, "T must be an integral type");
+#if ARDUINOJSON_USE_EXTENSIONS
+    auto extension = type_ & VariantTypeBits::ExtensionBit
+                         ? getExtension(resources)
+                         : nullptr;
+#else
     (void)resources;  // silence warning
+#endif
     switch (type_) {
       case VariantType::Boolean:
         return content_.asBoolean;
@@ -215,9 +227,9 @@ class VariantData {
         return convertNumber<T>(content_.asInt32);
 #if ARDUINOJSON_USE_LONG_LONG
       case VariantType::Uint64:
-        return convertNumber<T>(getExtension(resources)->asUint64);
+        return convertNumber<T>(extension->asUint64);
       case VariantType::Int64:
-        return convertNumber<T>(getExtension(resources)->asInt64);
+        return convertNumber<T>(extension->asInt64);
 #endif
       case VariantType::LinkedString:
         return parseNumber<T>(content_.asLinkedString);
@@ -227,7 +239,7 @@ class VariantData {
         return convertNumber<T>(content_.asFloat);
 #if ARDUINOJSON_USE_DOUBLE
       case VariantType::Double:
-        return convertNumber<T>(getExtension(resources)->asDouble);
+        return convertNumber<T>(extension->asDouble);
 #endif
       default:
         return 0;
