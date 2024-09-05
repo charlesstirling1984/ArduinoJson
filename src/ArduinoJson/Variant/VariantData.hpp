@@ -44,9 +44,7 @@ class VariantData {
   typename TVisitor::result_type accept(
       TVisitor& visit, const ResourceManager* resources) const {
 #if ARDUINOJSON_USE_EXTENSIONS
-    auto extension = type_ & VariantTypeBits::ExtensionBit
-                         ? getExtension(resources)
-                         : nullptr;
+    auto extension = getExtension(resources);
 #else
     (void)resources;  // silence warning
 #endif
@@ -136,7 +134,11 @@ class VariantData {
   }
 
   bool asBoolean(const ResourceManager* resources) const {
+#if ARDUINOJSON_USE_EXTENSIONS
+    auto extension = getExtension(resources);
+#else
     (void)resources;  // silence warning
+#endif
     switch (type_) {
       case VariantType::Boolean:
         return content_.asBoolean;
@@ -147,14 +149,14 @@ class VariantData {
         return content_.asFloat != 0;
 #if ARDUINOJSON_USE_DOUBLE
       case VariantType::Double:
-        return getExtension(resources)->asDouble != 0;
+        return extension->asDouble != 0;
 #endif
       case VariantType::Null:
         return false;
 #if ARDUINOJSON_USE_LONG_LONG
       case VariantType::Uint64:
       case VariantType::Int64:
-        return getExtension(resources)->asUint64 != 0;
+        return extension->asUint64 != 0;
 #endif
       default:
         return true;
@@ -181,9 +183,7 @@ class VariantData {
   T asFloat(const ResourceManager* resources) const {
     static_assert(is_floating_point<T>::value, "T must be a floating point");
 #if ARDUINOJSON_USE_EXTENSIONS
-    auto extension = type_ & VariantTypeBits::ExtensionBit
-                         ? getExtension(resources)
-                         : nullptr;
+    auto extension = getExtension(resources);
 #else
     (void)resources;  // silence warning
 #endif
@@ -218,9 +218,7 @@ class VariantData {
   T asIntegral(const ResourceManager* resources) const {
     static_assert(is_integral<T>::value, "T must be an integral type");
 #if ARDUINOJSON_USE_EXTENSIONS
-    auto extension = type_ & VariantTypeBits::ExtensionBit
-                         ? getExtension(resources)
-                         : nullptr;
+    auto extension = getExtension(resources);
 #else
     (void)resources;  // silence warning
 #endif
@@ -345,7 +343,11 @@ class VariantData {
 
   template <typename T>
   bool isInteger(const ResourceManager* resources) const {
+#if ARDUINOJSON_USE_LONG_LONG
+    auto extension = getExtension(resources);
+#else
     (void)resources;  // silence warning
+#endif
     switch (type_) {
       case VariantType::Uint32:
         return canConvertNumber<T>(content_.asUint32);
@@ -355,10 +357,10 @@ class VariantData {
 
 #if ARDUINOJSON_USE_LONG_LONG
       case VariantType::Uint64:
-        return canConvertNumber<T>(getExtension(resources)->asUint64);
+        return canConvertNumber<T>(extension->asUint64);
 
       case VariantType::Int64:
-        return canConvertNumber<T>(getExtension(resources)->asInt64);
+        return canConvertNumber<T>(extension->asInt64);
 #endif
 
       default:
