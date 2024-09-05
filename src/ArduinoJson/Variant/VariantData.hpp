@@ -43,14 +43,20 @@ class VariantData {
   template <typename TVisitor>
   typename TVisitor::result_type accept(
       TVisitor& visit, const ResourceManager* resources) const {
+#if ARDUINOJSON_USE_EXTENSIONS
+    auto extension = type_ & VariantTypeBits::ExtensionBit
+                         ? getExtension(resources)
+                         : nullptr;
+#else
     (void)resources;  // silence warning
+#endif
     switch (type_) {
       case VariantType::Float:
         return visit.visit(content_.asFloat);
 
 #if ARDUINOJSON_USE_DOUBLE
       case VariantType::Double:
-        return visit.visit(getExtension(resources)->asDouble);
+        return visit.visit(extension->asDouble);
 #endif
 
       case VariantType::Array:
@@ -79,10 +85,10 @@ class VariantData {
 
 #if ARDUINOJSON_USE_LONG_LONG
       case VariantType::Int64:
-        return visit.visit(getExtension(resources)->asInt64);
+        return visit.visit(extension->asInt64);
 
       case VariantType::Uint64:
-        return visit.visit(getExtension(resources)->asUint64);
+        return visit.visit(extension->asUint64);
 #endif
 
       case VariantType::Boolean:
